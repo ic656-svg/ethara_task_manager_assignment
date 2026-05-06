@@ -23,7 +23,6 @@ Repository Layout
 - `schemas.py` — Pydantic schemas for API request/response models.
 - `app.py` — Streamlit UI that interacts with the API.
 - `requirements.txt` — Python dependencies.
-- `seed_demo.py` — helper script to seed demo accounts and sample data (added for demo).
 
 Quick start (Windows)
 ---------------------
@@ -47,12 +46,6 @@ uvicorn main:app --reload --host 127.0.0.1 --port 8000
 streamlit run app.py
 ```
 
-4. Optionally seed demo data (after starting the backend):
-
-```powershell
-python seed_demo.py
-```
-
 Environment variables
 ---------------------
 - `SECRET_KEY` — recommended to set a strong JWT secret in production. The code falls back to a default value if not set.
@@ -73,27 +66,16 @@ Data Models (high level)
 ------------------------
 - `User`: `id`, `username`, `hashed_password`, `role` (`Admin` or `Member`).
 - `Project`: `id`, `name`, `description`, `admin_id` (FK to `User`).
-	- `Project` (updated): includes optional `start_date` and `end_date` (ISO datetimes).
+	- `Project` also contains `start_date` and `end_date` (ISO datetimes).
 - `Task`: `id`, `title`, `description`, `status`, `due_date`, `project_id` (FK), `assigned_to` (FK to `User`).
 
 Security & Notes
 ----------------
 - JWT authentication is implemented in `auth.py`. Tokens are signed with `SECRET_KEY`.
 - Passwords are hashed using `passlib`'s `pbkdf2_sha256`.
-- The current implementation will create database tables automatically on application start. For production workflows use migrations (Alembic).
+- The current implementation will create database tables automatically on application start. For production workflows use migration.
 - If serving the Streamlit UI from a different origin than the API, enable CORS middleware or host the UI so it points to the same domain.
 
-Railway Deployment (concise)
----------------------------
-1. Create a Railway project and add a PostgreSQL plugin (Railway provides `DATABASE_URL`).
-2. In Railway service settings set environment variables: `DATABASE_URL` (Postgres URL) and `SECRET_KEY` (strong secret).
-3. Ensure `requirements.txt` is present (it is). Set the start/launch command for the service to:
-
-```bash
-uvicorn main:app --host 0.0.0.0 --port $PORT
-```
-
-4. If you want to host Streamlit too, create a second Railway service for it, and set the `API_URL` inside `app.py` to point to the deployed API URL.
 
 Demo Accounts
 -------------
@@ -102,17 +84,8 @@ Use the following demo accounts for recording the demo or testing after seeding/
 - Admin: `admin_ishan` / `password123`
 - Member: `member_1` / `member1_123`
 
-You can create these accounts via the Streamlit UI Registration form or by running:
 
-```powershell
-python seed_demo.py
-```
-
-Demo video guide
-----------------
-See `DEMO_SCRIPT.md` for a concise 2–3 minute demo script and recording checklist. The demo script now includes creating a project with `Start date` and `End date`, showing project duration on the workspace card, and verifying the member dashboard reflects tasks and analytics.
-
-Further improvements (recommended)
+Further improvements
 ----------------------------------
 - Add CORS middleware to the FastAPI app when the UI is hosted separately.
 - Add Alembic for database migrations.
@@ -121,4 +94,4 @@ Further improvements (recommended)
 
 License & Submission
 --------------------
-This repository is a demonstration for the Ethara.AI placement task. Include this repository link, the live URL, and a short demo video when submitting to the placement portal.
+This repository is a demonstration for placement task. 
